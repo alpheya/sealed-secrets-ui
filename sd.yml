@@ -1,0 +1,12 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: my-sealed-secret
+  namespace: default
+spec:
+  encryptedData:
+    password: AgBstZkN0cZh0oL+pX8+JjLxWP+f7aaxTlTn0IE+qMOvCd34tnjTy9SZY5+7gzCRNAtitNdk80TCmY90kmm0ze+ClEs8FMZiy0p5OmKrXiolhvImhPjbGChEQ7fOcpBlNnv2VEg5CHHp2dgAYaTX/rS9YANPdxncOjw1Rkr+9Y73KO3rn7KDdYKOhbAve54Nkw4jZ58yeO6WZNOrCA7BMZVeNY2qHDmRGn3C8vXsv7VKYqwhT/WXK1L+06tbLNWYJQs8JAbEwD/jey48i2VFWP6IfIF9MSIaTJW3V0GCPaBiY3TaLEwW90ZxShf0zkPK0nbVaHeEuoGDPzM+ro3oGkE4h/EOSiKP0Eq1ApfRec01woqR116V3ijf9XRZaZ0xMETv8Vu2Mx9eyB8iKogoMBeES8IGXJd9nj0dMmmBVgGpgnDKVP8GJA3CKfvcoCDZZyQOQwBBx8jyTcs//6ezh1ZrNpTy/U5f5Ga4qhiVQZCXvHlSDySjBRVvT0c//5vWttz8OUIUK4c5T27iKIt3fz3UzMf3+IIGVg5KiIIqtVHgJ+DaZkPNS3e0G5dNl/9xpDW9SI3+wuKlyr5pHlvYyXg0iUzLFrRIPy5n+3+DizW8/KOZaG5e6/voZFd8D6TMcEsqu/o0+7bDJAPSZ+scikJsvGUR7nN0aVwApbl2AvaRs93v1HQcKcXu/GxSCakq+9bNcSVUdnaXa9i2fA==
+  template:
+    metadata:
+      name: my-sealed-secret
+      namespace: default

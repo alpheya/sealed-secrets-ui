@@ -1,34 +1,30 @@
 package main
 
 import (
-	"context"
-	"io"
-	"os"
+	"fmt"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	"github.com/bitnami-labs/sealed-secrets/pkg/kubeseal"
-	"k8s.io/client-go/tools/clientcmd"
+	"github.com/quantum-wealth/sealed-secrets-ui/k8s"
+	sealedsecret "github.com/quantum-wealth/sealed-secrets-ui/sealed-secret"
 )
 
-func initClient(r io.Reader) clientcmd.ClientConfig {
-	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
-	loadingRules.DefaultClientConfig = &clientcmd.DefaultClientConfig
-
-	return clientcmd.NewInteractiveDeferredLoadingClientConfig(loadingRules, nil, r)
-}
-
 func main() {
-	clientConfig := initClient(os.Stdout)
-	f, err := kubeseal.OpenCert(context.Background(), clientConfig, metav1.NamespaceSystem, "sealed-secrets-controller", "")
+	pubKey, err := k8s.GetPublicKey()
 	if err != nil {
-		panic(err)
+		fmt.Println("Error:", err)
+		return
+	}
+	params := sealedsecret.EncryptValuesParams{
+		PubKey:    pubKey,
+		Namespace: "default",
+		Scope:     "",
+		Name:      "my-sealed-secret",
+		Values:    map[string]string{"password": "supersecret"},
 	}
 
-	_, err = io.Copy(os.Stdout, f)
+	yamlManifest, err := sealedsecret.GetSealedSecret(params)
 	if err != nil {
-		panic(err)
+		fmt.Println("Error:", err)
+		return
 	}
-
-	f.Close()
+	fmt.Println(yamlManifest)
 }
