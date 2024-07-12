@@ -22,10 +22,6 @@ func GetPublicKey() (*rsa.PublicKey, error) {
 
 	defer f.Close()
 
-	// _, err = io.Copy(os.Stdout, f)
-	// if err != nil {
-	// 	panic(err)
-	// }
 	certPEM, err := io.ReadAll(f)
 	if err != nil {
 		panic(err)
@@ -37,7 +33,6 @@ func GetPublicKey() (*rsa.PublicKey, error) {
 		panic("failed to decode PEM block containing public key")
 	}
 
-	// Parse the certificate
 	cert, err := x509.ParseCertificate(block.Bytes)
 	if err != nil {
 		panic(err)
