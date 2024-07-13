@@ -11,18 +11,17 @@ import (
 //go:embed *.gif
 var spinnerFiles embed.FS
 
-func Post(w http.ResponseWriter, r *http.Request) {
+func CreateSealedSecret(w http.ResponseWriter, r *http.Request) {
 	// sleep 2 seconds
 	time.Sleep(4 * time.Second)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(`{"status": "success"}`))
 
+	CodeArea("asd").Render(r.Context(), w)
 }
 
 func NewHandler() http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/spinner.gif", http.FileServer(http.FS(spinnerFiles)))
-	mux.Handle("/sealed-secret", templ.Handler(CodeArea(`asd`)))
+	mux.HandleFunc("/sealed-secret", CreateSealedSecret)
 	mux.Handle("/", templ.Handler(Home()))
 
 	return mux
