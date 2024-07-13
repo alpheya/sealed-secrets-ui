@@ -13,7 +13,7 @@ var spinnerFiles embed.FS
 
 func Post(w http.ResponseWriter, r *http.Request) {
 	// sleep 2 seconds
-	time.Sleep(200 * time.Second)
+	time.Sleep(4 * time.Second)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(`{"status": "success"}`))
 
@@ -22,7 +22,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 func NewHandler() http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/spinner.gif", http.FileServer(http.FS(spinnerFiles)))
-	mux.HandleFunc("/sealed-secret", Post)
+	mux.Handle("/sealed-secret", templ.Handler(CodeArea(`asd`)))
 	mux.Handle("/", templ.Handler(Home()))
 
 	return mux

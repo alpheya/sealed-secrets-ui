@@ -1,17 +1,23 @@
 package web
 
 templ CodeArea(yamlContent string) {
-	<div class="field">
-		<label class="label">
-			YAML Configuration
-			<svg onclick="copyToClipboard()" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Copy" style="margin-left: 10px; cursor: pointer; transition: all 0.2s ease-in 0s;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-		</label>
-		<div class="control">
-			<textarea id="sealedSecretYaml" class="textarea has-fixed-size" style="font-family: monospace; font-size: 0.8rem; height: 400px;" readonly>
-				{ yamlContent }
-			</textarea>
+	<div class="card">
+		<div class="card-content">
+			<div class="content">
+				<div class="field">
+					<label class="label">
+						YAML Configuration
+						<svg onclick="copyToClipboard()" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Copy" style="margin-left: 10px; cursor: pointer; transition: all 0.2s ease-in 0s;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+					</label>
+					<div class="control">
+						<textarea id="sealedSecretYaml" class="textarea has-fixed-size" style="font-family: monospace; font-size: 0.8rem; height: 400px;" readonly>
+							{ yamlContent }
+						</textarea>
+					</div>
+					<p class="help">Press the Copy icon or copy the YAML configuration from here.</p>
+				</div>
+			</div>
 		</div>
-		<p class="help">Press the Copy icon or copy the YAML configuration from here.</p>
 	</div>
 }
 
@@ -20,7 +26,7 @@ templ Home() {
 		<section class="section">
 			<div class="container">
 				<h1 class="title">Sealed Secrets UI</h1>
-				<form hx-post="/sealed-secret" hx-swap="outerHTML">
+				<form hx-post="/sealed-secret" hx-target=".card" hx-swap="outerHTML">
 					<div class="field">
 						<label class="label">Scope</label>
 						<div class="control">
@@ -65,22 +71,11 @@ PG_PASSWORD=SecretPassword"
 							<button id="encryptButton" class="button is-link" hx-indicator="#indicator">
 								Encrypt
 							</button>
-							<img id="indicator" class="htmx-indicator" src="/spinner.gif"/>
+							<img id="indicator" class="loading-indicator" style="display: none;" src="/spinner.gif"/>
 						</div>
 					</div>
 				</form>
-			</div>
-			<div class="card mt-6">
-				<div class="card-content">
-					<div class="content">
-						@CodeArea(`apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: myconfig
-data:
-  mykey: myvalue`)
-					</div>
-				</div>
+				<div class="card"></div>
 			</div>
 		</section>
 	}

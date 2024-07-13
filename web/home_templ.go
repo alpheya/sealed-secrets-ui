@@ -26,20 +26,20 @@ func CodeArea(yamlContent string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"field\"><label class=\"label\">YAML Configuration <svg onclick=\"copyToClipboard()\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" title=\"Copy\" style=\"margin-left: 10px; cursor: pointer; transition: all 0.2s ease-in 0s;\"><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"></path><rect x=\"8\" y=\"2\" width=\"8\" height=\"4\" rx=\"1\" ry=\"1\"></rect></svg></label><div class=\"control\"><textarea id=\"sealedSecretYaml\" class=\"textarea has-fixed-size\" style=\"font-family: monospace; font-size: 0.8rem; height: 400px;\" readonly>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"card\"><div class=\"card-content\"><div class=\"content\"><div class=\"field\"><label class=\"label\">YAML Configuration <svg onclick=\"copyToClipboard()\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" title=\"Copy\" style=\"margin-left: 10px; cursor: pointer; transition: all 0.2s ease-in 0s;\"><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"></path><rect x=\"8\" y=\"2\" width=\"8\" height=\"4\" rx=\"1\" ry=\"1\"></rect></svg></label><div class=\"control\"><textarea id=\"sealedSecretYaml\" class=\"textarea has-fixed-size\" style=\"font-family: monospace; font-size: 0.8rem; height: 400px;\" readonly>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(yamlContent)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/home.templ`, Line: 11, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/home.templ`, Line: 14, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea></div><p class=\"help\">Press the Copy icon or copy the YAML configuration from here.</p></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea></div><p class=\"help\">Press the Copy icon or copy the YAML configuration from here.</p></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -77,20 +77,7 @@ func Home() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"section\"><div class=\"container\"><h1 class=\"title\">Sealed Secrets UI</h1><form hx-post=\"/sealed-secret\" hx-swap=\"outerHTML\"><div class=\"field\"><label class=\"label\">Scope</label><div class=\"control\"><label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"cluster\"> Cluster</label> <label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"namespace\"> Namespace</label> <label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"strict\"> Strict</label></div></div><div class=\"field\"><label class=\"label\">Namespace</label><div class=\"control\"><input class=\"input\" type=\"text\" placeholder=\"Namespace\" name=\"namespace\"></div></div><div class=\"field\"><label class=\"label\">Secret Name</label><div class=\"control\"><input class=\"input\" type=\"text\" placeholder=\"the kubernetes secret name\" name=\"secretName\"></div></div><div class=\"field\"><label class=\"label\">Values to Encrypt</label><div class=\"control\"><textarea class=\"textarea\" placeholder=\"API_TOKEN=SecretToken\nPG_PASSWORD=SecretPassword\"></textarea></div></div><div class=\"field\"><div class=\"control\"><button id=\"encryptButton\" class=\"button is-link\" hx-indicator=\"#indicator\">Encrypt</button> <img id=\"indicator\" class=\"htmx-indicator\" src=\"/spinner.gif\" style=\"width: 20px; height: 20px;\"></div></div></form></div><div class=\"card mt-6\"><div class=\"card-content\"><div class=\"content\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = CodeArea(`apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: myconfig
-data:
-  mykey: myvalue`).Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"section\"><div class=\"container\"><h1 class=\"title\">Sealed Secrets UI</h1><form hx-post=\"/sealed-secret\" hx-target=\".card\" hx-swap=\"outerHTML\"><div class=\"field\"><label class=\"label\">Scope</label><div class=\"control\"><label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"cluster\"> Cluster</label> <label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"namespace\"> Namespace</label> <label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"strict\"> Strict</label></div></div><div class=\"field\"><label class=\"label\">Namespace</label><div class=\"control\"><input class=\"input\" type=\"text\" placeholder=\"Namespace\" name=\"namespace\"></div></div><div class=\"field\"><label class=\"label\">Secret Name</label><div class=\"control\"><input class=\"input\" type=\"text\" placeholder=\"the kubernetes secret name\" name=\"secretName\"></div></div><div class=\"field\"><label class=\"label\">Values to Encrypt</label><div class=\"control\"><textarea class=\"textarea\" placeholder=\"API_TOKEN=SecretToken\nPG_PASSWORD=SecretPassword\"></textarea></div></div><div class=\"field\"><div class=\"control\"><button id=\"encryptButton\" class=\"button is-link\" hx-indicator=\"#indicator\">Encrypt</button> <img id=\"indicator\" class=\"loading-indicator\" style=\"display: none;\" src=\"/spinner.gif\"></div></div></form><div class=\"card\"></div></div></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -8,7 +8,6 @@ package web
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-
 func Layout(title string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -27,14 +26,14 @@ func Layout(title string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\"><meta name=\"theme-color\" content=\"#000000\"><script>\n\t\t\tfunction copyToClipboard() {\n\t\t\t\tvar copyText = document.getElementById(\"sealedSecretYaml\");\n\t\t\t\tcopyText.select();\n\t\t\t\tcopyText.setSelectionRange(0, 99999);\n\t\t\t\tdocument.execCommand(\"copy\");\n\t\t\t}\n\t\t</script><style>\n\t\t\t\t.token.number,\n\t\t\t\t.token.tag {\n\t\t\t\t  all: inherit;\n\t\t\t\t  color: hsl(14, 58%, 55%);\n\t\t\t\t}\n\t\t\t</style><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css\"><title>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\"><meta name=\"theme-color\" content=\"#000000\"><script>\n\t\t\tfunction copyToClipboard() {\n\t\t\t\tvar copyText = document.getElementById(\"sealedSecretYaml\");\n\t\t\t\tcopyText.select();\n\t\t\t\tcopyText.setSelectionRange(0, 99999);\n\t\t\t\tdocument.execCommand(\"copy\");\n\t\t\t}\n\t\t</script><style>\n\t\t\t\t.token.number,\n\t\t\t\t.token.tag {\n\t\t\t\t  all: inherit;\n\t\t\t\t  color: hsl(14, 58%, 55%);\n\t\t\t\t}\n\t\t\t\t.loading-indicator {\n        \tdisplay:none;\n    \t\t}\n    \t\t.htmx-request .loading-indicator {\n        \tdisplay:inline;\n    \t\t}\n    \t\t.htmx-request.loading-indicator {\n        \tdisplay:inline;\n    \t\t}\n\t\t\t</style><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css\"><title>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/layout.templ`, Line: 27, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/layout.templ`, Line: 34, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
