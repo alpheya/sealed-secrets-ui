@@ -1,0 +1,25 @@
+package web
+
+import "os"
+
+templ Layout(title string) {
+	<html>
+		<head>
+			<style>
+				.token.number,
+				.token.tag {
+				  all: inherit;
+				  color: hsl(14, 58%, 55%);
+				}
+			</style>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
+			<title>{ title }</title>
+			<script src="https://unpkg.com/htmx.org@1.8.5"></script>
+		</head>
+		<body>
+			<div id="content" class="container p-5 content">
+				{ children... }
+			</div>
+		</body>
+	</html>
+}

@@ -6,7 +6,6 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"io"
-	"os"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -14,7 +13,7 @@ import (
 )
 
 func GetPublicKey() (*rsa.PublicKey, error) {
-	clientConfig := initClient(os.Stdout)
+	clientConfig := initClient()
 	f, err := kubeseal.OpenCert(context.Background(), clientConfig, metav1.NamespaceSystem, "sealed-secrets-controller", "")
 	if err != nil {
 		panic(err)
