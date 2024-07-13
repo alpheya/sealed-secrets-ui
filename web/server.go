@@ -18,7 +18,7 @@ func recoverer(next http.Handler) http.HandlerFunc {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		defer func(ctx context.Context) {
 			if rvr := recover(); rvr != nil {
-				log.Error().Ctx(ctx).Err(fmt.Errorf("Recovered from panic: %v\nstack: %s", rvr, string(debug.Stack())))
+				log.Error().Ctx(ctx).Err(fmt.Errorf("recovered from panic: %v\nstack: %s", rvr, string(debug.Stack())))
 
 				writer.Header().Set("Content-Type", "application/json")
 				writer.WriteHeader(http.StatusInternalServerError)

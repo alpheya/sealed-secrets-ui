@@ -8,7 +8,7 @@ package web
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func Home() templ.Component {
+func CodeArea(yamlContent string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -26,7 +26,46 @@ func Home() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var2 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"field\"><label class=\"label\">YAML Configuration <svg onclick=\"copyToClipboard()\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"black\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" title=\"Copy\" style=\"margin-left: 10px; cursor: pointer; transition: all 0.2s ease-in 0s;\"><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"></path><rect x=\"8\" y=\"2\" width=\"8\" height=\"4\" rx=\"1\" ry=\"1\"></rect></svg></label><div class=\"control\"><textarea id=\"sealedSecretYaml\" class=\"textarea has-fixed-size\" style=\"font-family: monospace; font-size: 0.8rem; height: 400px;\" readonly>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(yamlContent)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/home.templ`, Line: 11, Col: 17}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea></div><p class=\"help\">You can copy and paste the YAML configuration from here.</p></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func Home() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Var4 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 			if !templ_7745c5c3_IsBuffer {
@@ -38,13 +77,26 @@ func Home() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"section\"><div class=\"container\"><h1 class=\"title\">SealedUI</h1><div class=\"field\"><label class=\"label\">Scope</label><div class=\"control\"><label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"cluster\"> Cluster</label> <label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"namespace\"> Namespace</label> <label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"strict\"> Strict</label></div></div><div class=\"field\"><label class=\"label\">Namespace</label><div class=\"control\"><input class=\"input\" type=\"text\" placeholder=\"Namespace\" name=\"namespace\"></div></div><div class=\"field\"><label class=\"label\">Secret Name</label><div class=\"control\"><input class=\"input\" type=\"text\" placeholder=\"Secret name\" name=\"secretName\"></div></div><div class=\"field\"><label class=\"label\">Values to Encrypt</label><div class=\"control\"><textarea class=\"textarea\" placeholder=\"MY_TOKEN=SomeSuperSecretToken\nMY_PASSWORD=SomeSuperSecretPassword\"></textarea></div></div><div class=\"field\"><div class=\"control\"><button class=\"button is-link\">Encrypt</button></div></div></div></section>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"section\"><div class=\"container\"><h1 class=\"title\">Sealed Secrets UI</h1><div class=\"field\"><label class=\"label\">Scope</label><div class=\"control\"><label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"cluster\"> Cluster</label> <label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"namespace\"> Namespace</label> <label class=\"radio\"><input type=\"radio\" name=\"scope\" value=\"strict\"> Strict</label></div></div><div class=\"field\"><label class=\"label\">Namespace</label><div class=\"control\"><input class=\"input\" type=\"text\" placeholder=\"Namespace\" name=\"namespace\"></div></div><div class=\"field\"><label class=\"label\">Secret Name</label><div class=\"control\"><input class=\"input\" type=\"text\" placeholder=\"the kubernetes secret name\" name=\"secretName\"></div></div><div class=\"field\"><label class=\"label\">Values to Encrypt</label><div class=\"control\"><textarea class=\"textarea\" placeholder=\"API_TOKEN=SecretToken\nPG_PASSWORD=SecretPassword\"></textarea></div></div><div class=\"field\"><div class=\"control\"><button class=\"button is-link\">Encrypt</button></div></div></div><div class=\"card mt-6\"><div class=\"card-content\"><div class=\"content\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = CodeArea(`apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myconfig
+data:
+  mykey: myvalue`).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = Layout("sealed-secrets-ui").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Layout("sealed-secrets-ui").Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

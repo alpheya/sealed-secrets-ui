@@ -1,58 +1,82 @@
 package web
 
+templ CodeArea(yamlContent string) {
+	<div class="field">
+		<label class="label">
+			YAML Configuration
+			<svg onclick="copyToClipboard()" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Copy" style="margin-left: 10px; cursor: pointer; transition: all 0.2s ease-in 0s;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+		</label>
+		<div class="control">
+			<textarea id="sealedSecretYaml" class="textarea has-fixed-size" style="font-family: monospace; font-size: 0.8rem; height: 400px;" readonly>
+				{ yamlContent }
+			</textarea>
+		</div>
+		<p class="help">Press the Copy icon or copy the YAML configuration from here.</p>
+	</div>
+}
+
 templ Home() {
-  @Layout("sealed-secrets-ui") {
+	@Layout("sealed-secrets-ui") {
 		<section class="section">
 			<div class="container">
-				<h1 class="title">SealedUI</h1>
-
+				<h1 class="title">Sealed Secrets UI</h1>
 				<div class="field">
 					<label class="label">Scope</label>
 					<div class="control">
 						<label class="radio">
-							<input type="radio" name="scope" value="cluster">
+							<input type="radio" name="scope" value="cluster"/>
 							Cluster
 						</label>
 						<label class="radio">
-							<input type="radio" name="scope" value="namespace">
+							<input type="radio" name="scope" value="namespace"/>
 							Namespace
 						</label>
 						<label class="radio">
-							<input type="radio" name="scope" value="strict">
+							<input type="radio" name="scope" value="strict"/>
 							Strict
 						</label>
 					</div>
 				</div>
-
 				<div class="field">
 					<label class="label">Namespace</label>
 					<div class="control">
-						<input class="input" type="text" placeholder="Namespace" name="namespace">
+						<input class="input" type="text" placeholder="Namespace" name="namespace"/>
 					</div>
 				</div>
-
 				<div class="field">
 					<label class="label">Secret Name</label>
 					<div class="control">
-						<input class="input" type="text" placeholder="Secret name" name="secretName">
+						<input class="input" type="text" placeholder="the kubernetes secret name" name="secretName"/>
 					</div>
 				</div>
-
 				<div class="field">
 					<label class="label">Values to Encrypt</label>
 					<div class="control">
-						<textarea class="textarea" placeholder="MY_TOKEN=SomeSuperSecretToken
-MY_PASSWORD=SomeSuperSecretPassword">
-            </textarea>
+						<textarea
+							class="textarea"
+							placeholder="API_TOKEN=SecretToken
+PG_PASSWORD=SecretPassword"
+						></textarea>
 					</div>
 				</div>
-
 				<div class="field">
 					<div class="control">
 						<button class="button is-link">Encrypt</button>
 					</div>
 				</div>
 			</div>
+			<div class="card mt-6">
+				<div class="card-content">
+					<div class="content">
+						@CodeArea(`apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myconfig
+data:
+  mykey: myvalue`)
+					</div>
+				</div>
+			</div>
 		</section>
-  }
+	}
 }

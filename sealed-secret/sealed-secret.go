@@ -108,7 +108,7 @@ func GetSealedSecret(params EncryptValuesParams) (string, error) {
 
 	yamlData, err := yaml.Marshal(sealedSecret)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal sealed secret to YAML: %v", err)
+		return "", fmt.Errorf("failed to marshal sealed secret to YAML: %w", err)
 	}
 
 	return string(yamlData), nil
