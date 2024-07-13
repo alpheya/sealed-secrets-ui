@@ -25,12 +25,26 @@ templ Layout(title string) {
 			</style>
 			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
 			<title>{ title }</title>
-			<script src="https://unpkg.com/htmx.org@1.8.5"></script>
+			<script src="https://unpkg.com/htmx.org@2.0.1" integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/" crossorigin="anonymous"></script>
 		</head>
 		<body>
 			<div id="content" class="container p-5 content">
 				{ children... }
 			</div>
+			<script>
+			document.addEventListener("htmx:beforeRequest", function(event) {
+				console.log(event);
+					if (event.detail.pathInfo.requestPath === "/sealed-secret") {
+						document.getElementById("encryptButton").style.display = "none";
+					}
+			});
+			document.addEventListener("htmx:afterRequest", function(event) {
+				console.log(event);
+					if (event.detail.pathInfo.requestPath === "/sealed-secret") {
+						document.getElementById("encryptButton").style.display = "block";
+					}
+			});
+			</script>
 		</body>
 	</html>
 }

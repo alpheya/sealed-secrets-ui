@@ -20,50 +20,55 @@ templ Home() {
 		<section class="section">
 			<div class="container">
 				<h1 class="title">Sealed Secrets UI</h1>
-				<div class="field">
-					<label class="label">Scope</label>
-					<div class="control">
-						<label class="radio">
-							<input type="radio" name="scope" value="cluster"/>
-							Cluster
-						</label>
-						<label class="radio">
-							<input type="radio" name="scope" value="namespace"/>
-							Namespace
-						</label>
-						<label class="radio">
-							<input type="radio" name="scope" value="strict"/>
-							Strict
-						</label>
+				<form hx-post="/sealed-secret" hx-swap="outerHTML">
+					<div class="field">
+						<label class="label">Scope</label>
+						<div class="control">
+							<label class="radio">
+								<input type="radio" name="scope" value="cluster"/>
+								Cluster
+							</label>
+							<label class="radio">
+								<input type="radio" name="scope" value="namespace"/>
+								Namespace
+							</label>
+							<label class="radio">
+								<input type="radio" name="scope" value="strict"/>
+								Strict
+							</label>
+						</div>
 					</div>
-				</div>
-				<div class="field">
-					<label class="label">Namespace</label>
-					<div class="control">
-						<input class="input" type="text" placeholder="Namespace" name="namespace"/>
+					<div class="field">
+						<label class="label">Namespace</label>
+						<div class="control">
+							<input class="input" type="text" placeholder="Namespace" name="namespace"/>
+						</div>
 					</div>
-				</div>
-				<div class="field">
-					<label class="label">Secret Name</label>
-					<div class="control">
-						<input class="input" type="text" placeholder="the kubernetes secret name" name="secretName"/>
+					<div class="field">
+						<label class="label">Secret Name</label>
+						<div class="control">
+							<input class="input" type="text" placeholder="the kubernetes secret name" name="secretName"/>
+						</div>
 					</div>
-				</div>
-				<div class="field">
-					<label class="label">Values to Encrypt</label>
-					<div class="control">
-						<textarea
-							class="textarea"
-							placeholder="API_TOKEN=SecretToken
+					<div class="field">
+						<label class="label">Values to Encrypt</label>
+						<div class="control">
+							<textarea
+								class="textarea"
+								placeholder="API_TOKEN=SecretToken
 PG_PASSWORD=SecretPassword"
-						></textarea>
+							></textarea>
+						</div>
 					</div>
-				</div>
-				<div class="field">
-					<div class="control">
-						<button class="button is-link">Encrypt</button>
+					<div class="field">
+						<div class="control">
+							<button id="encryptButton" class="button is-link" hx-indicator="#indicator">
+								Encrypt
+							</button>
+							<img id="indicator" class="htmx-indicator" src="/spinner.gif"/>
+						</div>
 					</div>
-				</div>
+				</form>
 			</div>
 			<div class="card mt-6">
 				<div class="card-content">

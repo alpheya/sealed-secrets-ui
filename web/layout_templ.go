@@ -40,7 +40,7 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><script src=\"https://unpkg.com/htmx.org@1.8.5\"></script></head><body><div id=\"content\" class=\"container p-5 content\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><script src=\"https://unpkg.com/htmx.org@2.0.1\" integrity=\"sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/\" crossorigin=\"anonymous\"></script></head><body><div id=\"content\" class=\"container p-5 content\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -48,7 +48,7 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><script>\n\t\t\tdocument.addEventListener(\"htmx:beforeRequest\", function(event) {\n\t\t\t\tconsole.log(event);\n\t\t\t\t\tif (event.detail.pathInfo.requestPath === \"/sealed-secret\") {\n\t\t\t\t\t\tdocument.getElementById(\"encryptButton\").style.display = \"none\";\n\t\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener(\"htmx:afterRequest\", function(event) {\n\t\t\t\tconsole.log(event);\n\t\t\t\t\tif (event.detail.pathInfo.requestPath === \"/sealed-secret\") {\n\t\t\t\t\t\tdocument.getElementById(\"encryptButton\").style.display = \"block\";\n\t\t\t\t\t}\n\t\t\t});\n\t\t\t</script></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
