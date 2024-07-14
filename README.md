@@ -2,6 +2,9 @@
 
 Sealed Secrets UI provides a simple and intuitive web interface for creating and managing sealed secrets in Kubernetes. This service simplifies the traditional command-line workflow, making it easier for developers to securely manage secrets without remembering complex kubectl commands.
 
+![Sealed Secrets UI](./sealed-secrets-ui.png)
+
+
 ## Features
 
 - 🖥️  Simple Web Interface: Create and update sealed secrets directly through a user-friendly web interface.
