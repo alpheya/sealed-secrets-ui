@@ -10,7 +10,7 @@ import (
 	"encoding/binary"
 )
 
-func (s SealedSecretService) hybridEncrypt(value, label string) (string, error) {
+func hybridEncrypt(pubKey *rsa.PublicKey, value, label string) (string, error) {
 	// Generate a random AES key
 	aesKey := make([]byte, 32) // Using AES-256
 	if _, err := rand.Read(aesKey); err != nil {
@@ -36,7 +36,7 @@ func (s SealedSecretService) hybridEncrypt(value, label string) (string, error) 
 	cipherText := gcm.Seal(nil, nonce, []byte(value), nil)
 
 	// Encrypt the AES key using RSA-OAEP
-	encryptedKey, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, s.pubKey, aesKey, []byte(label))
+	encryptedKey, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, pubKey, aesKey, []byte(label))
 	if err != nil {
 		return "", err
 	}
