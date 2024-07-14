@@ -22,6 +22,16 @@ func NewSealedSecretHandler(svc sealer) SealedSecretHandler {
 	return SealedSecretHandler{svc: svc}
 }
 
+func reapondError(w http.ResponseWriter, message string) {
+	w.Header().Set("HX-Retarget", ".message")
+
+	err := ui.Error(message).Render(context.Background(), w)
+	if err != nil {
+		log.Err(err).Msg("error rendering error message")
+		http.Error(w, "Error rendering error message", http.StatusInternalServerError)
+	}
+}
+
 func (s SealedSecretHandler) CreateSealedSecretHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -39,7 +49,7 @@ func (s SealedSecretHandler) CreateSealedSecretHandler(w http.ResponseWriter, r 
 	valuesToEncrypt := r.FormValue("values")
 
 	if scope == "" || namespace == "" || secretName == "" || valuesToEncrypt == "" {
-		http.Error(w, "Missing required fields", http.StatusBadRequest)
+		reapondError(w, "All fields are required")
 		return
 	}
 
@@ -47,7 +57,7 @@ func (s SealedSecretHandler) CreateSealedSecretHandler(w http.ResponseWriter, r 
 	keyValues := parseKeyValuePairs(valuesToEncrypt)
 
 	if keyValues == nil {
-		http.Error(w, "Error parsing key value pairs", http.StatusBadRequest)
+		reapondError(w, "No key-value pairs found")
 		return
 	}
 
@@ -64,7 +74,7 @@ func (s SealedSecretHandler) CreateSealedSecretHandler(w http.ResponseWriter, r 
 
 	if err != nil {
 		log.Ctx(r.Context()).Err(err).Msg("error creating sealed secret")
-		http.Error(w, "Error creating sealed secret", http.StatusInternalServerError)
+		reapondError(w, "Error creating sealed secret")
 		return
 	}
 

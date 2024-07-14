@@ -20,7 +20,7 @@ func NewRouter() http.Handler {
 	}
 
 	if controllerName == "" {
-		controllerName = "sealed-secrets-controller" // default name if sealed-secrets was installed with Helm
+		controllerName = "sealed-secrets-controller" // default controllerName if sealed-secrets was installed with Helm
 	}
 
 	svc := sealedsecret.NewSealedSecretService(controllerNamespace, controllerName)

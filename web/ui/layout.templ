@@ -43,7 +43,11 @@ templ Layout(title string) {
 				console.log(event);
 					if (event.detail.pathInfo.requestPath === "/sealed-secret") {
 						document.getElementById("encryptButton").style.display = "none";
-					}
+						const element = document.querySelector(".message");
+						if (element) {
+    					element.style.display = "none";
+						}
+					};
 			});
 			document.addEventListener("htmx:afterRequest", function(event) {
 				console.log(event);

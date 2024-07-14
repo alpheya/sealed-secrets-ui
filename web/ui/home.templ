@@ -25,6 +25,7 @@ templ Home() {
 	@Layout("sealed-secrets-ui") {
 		<section class="section">
 			<div class="container">
+				<article class="message"></article>
 				<h1 class="title">Sealed Secrets UI</h1>
 				<form hx-post="/sealed-secret" hx-target=".card" hx-swap="outerHTML">
 					<div class="field">

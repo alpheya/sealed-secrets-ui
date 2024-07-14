@@ -47,7 +47,7 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><script>\n\t\t\tdocument.addEventListener(\"htmx:beforeRequest\", function(event) {\n\t\t\t\tconsole.log(event);\n\t\t\t\t\tif (event.detail.pathInfo.requestPath === \"/sealed-secret\") {\n\t\t\t\t\t\tdocument.getElementById(\"encryptButton\").style.display = \"none\";\n\t\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener(\"htmx:afterRequest\", function(event) {\n\t\t\t\tconsole.log(event);\n\t\t\t\t\tif (event.detail.pathInfo.requestPath === \"/sealed-secret\") {\n\t\t\t\t\t\tdocument.getElementById(\"encryptButton\").style.display = \"block\";\n\t\t\t\t\t}\n\t\t\t});\n\t\t\t</script></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><script>\n\t\t\tdocument.addEventListener(\"htmx:beforeRequest\", function(event) {\n\t\t\t\tconsole.log(event);\n\t\t\t\t\tif (event.detail.pathInfo.requestPath === \"/sealed-secret\") {\n\t\t\t\t\t\tdocument.getElementById(\"encryptButton\").style.display = \"none\";\n\t\t\t\t\t\tconst element = document.querySelector(\".message\");\n\t\t\t\t\t\tif (element) {\n    \t\t\t\t\telement.style.display = \"none\";\n\t\t\t\t\t\t}\n\t\t\t\t\t};\n\t\t\t});\n\t\t\tdocument.addEventListener(\"htmx:afterRequest\", function(event) {\n\t\t\t\tconsole.log(event);\n\t\t\t\t\tif (event.detail.pathInfo.requestPath === \"/sealed-secret\") {\n\t\t\t\t\t\tdocument.getElementById(\"encryptButton\").style.display = \"block\";\n\t\t\t\t\t}\n\t\t\t});\n\t\t\t</script></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
