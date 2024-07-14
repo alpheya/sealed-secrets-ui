@@ -51,20 +51,8 @@ func decodeSecret(secretData map[string][]byte) map[string]string {
 	return data
 }
 
-func getSecretData(ctx context.Context, namespace, secretName string) (map[string]string, error) {
-	var clientset *kubernetes.Clientset
-	var err error
-
-	clientset, err = getClusterClient()
-	if err != nil {
-		clientset, err = getLocalClient()
-	}
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to get client: %w", err)
-	}
-
-	secret, err := clientset.CoreV1().Secrets(namespace).Get(ctx, secretName, metav1.GetOptions{})
+func (s SealedSecretService) getSecretData(ctx context.Context, namespace, secretName string) (map[string]string, error) {
+	secret, err := s.k8sClient.CoreV1().Secrets(namespace).Get(ctx, secretName, metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
 		log.Warn().Msg("Secret not found")
 		return nil, nil

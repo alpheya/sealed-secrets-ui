@@ -7,11 +7,13 @@ import (
 
 	"github.com/quantum-wealth/sealed-secrets-ui/model"
 	"gopkg.in/yaml.v2"
+	"k8s.io/client-go/kubernetes"
 )
 
 type SealedSecretService struct {
 	sealedSecretControllerName      string
 	sealedSecretControllerNamespace string
+	k8sClient                       *kubernetes.Clientset
 }
 
 type encryptRequest struct {
@@ -22,15 +24,28 @@ type encryptRequest struct {
 	values     map[string]string
 }
 
-func NewSealedSecretService(controllerNamespace, controllerName string) SealedSecretService {
+func NewSealedSecretService(controllerNamespace, controllerName string) (SealedSecretService, error) {
+	var clientset *kubernetes.Clientset
+	var err error
+
+	clientset, err = getClusterClient()
+	if err != nil {
+		clientset, err = getLocalClient()
+	}
+
+	if err != nil {
+		return SealedSecretService{}, fmt.Errorf("failed to get client: %w", err)
+	}
+
 	return SealedSecretService{
 		sealedSecretControllerNamespace: controllerNamespace,
 		sealedSecretControllerName:      controllerName,
-	}
+		k8sClient:                       clientset,
+	}, nil
 }
 
 func (s SealedSecretService) CreateSealedSecret(ctx context.Context, opts model.CreateOpts) (string, error) {
-	existingData, err := getSecretData(ctx, opts.Namespace, opts.SecretName)
+	existingData, err := s.getSecretData(ctx, opts.Namespace, opts.SecretName)
 	if err != nil {
 		return "", fmt.Errorf("failed to get existing secret data: %w", err)
 	}

@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/rs/zerolog/log"
+
 	"github.com/a-h/templ"
 	sealedsecret "github.com/quantum-wealth/sealed-secrets-ui/sealed-secret"
 	"github.com/quantum-wealth/sealed-secrets-ui/web/assets"
@@ -23,7 +25,11 @@ func NewRouter() http.Handler {
 		controllerName = "sealed-secrets-controller" // default controllerName if sealed-secrets was installed with Helm
 	}
 
-	svc := sealedsecret.NewSealedSecretService(controllerNamespace, controllerName)
+	svc, err := sealedsecret.NewSealedSecretService(controllerNamespace, controllerName)
+	if err != nil {
+		log.Panic().Err(err).Msg("failed to create sealed secret service")
+	}
+
 	handler := handlers.NewSealedSecretHandler(svc)
 
 	mux := http.NewServeMux()
