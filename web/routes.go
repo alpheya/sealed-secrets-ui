@@ -29,6 +29,7 @@ func NewRouter() http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/spinner.gif", http.FileServer(http.FS(assets.SpinnerFiles)))
 	mux.HandleFunc("/sealed-secret", handler.CreateSealedSecretHandler)
+	mux.HandleFunc("/healthz", handlers.HealthHandler)
 	mux.Handle("/", templ.Handler(ui.Home()))
 
 	return mux
