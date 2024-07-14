@@ -10,13 +10,7 @@ import (
 	"encoding/binary"
 )
 
-type EncryptParams struct {
-	PublicKey *rsa.PublicKey
-	Value     string
-	Label     string
-}
-
-func HybridEncrypt(params EncryptParams) (string, error) {
+func (s SealedSecretService) hybridEncrypt(value, label string) (string, error) {
 	// Generate a random AES key
 	aesKey := make([]byte, 32) // Using AES-256
 	if _, err := rand.Read(aesKey); err != nil {
@@ -39,10 +33,10 @@ func HybridEncrypt(params EncryptParams) (string, error) {
 	nonce := make([]byte, gcm.NonceSize())
 
 	// Encrypt the data using AES-GCM
-	cipherText := gcm.Seal(nil, nonce, []byte(params.Value), nil)
+	cipherText := gcm.Seal(nil, nonce, []byte(value), nil)
 
 	// Encrypt the AES key using RSA-OAEP
-	encryptedKey, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, params.PublicKey, aesKey, []byte(params.Label))
+	encryptedKey, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, s.pubKey, aesKey, []byte(label))
 	if err != nil {
 		return "", err
 	}

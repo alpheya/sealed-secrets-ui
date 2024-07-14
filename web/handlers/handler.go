@@ -1,34 +1,28 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
 	"strings"
 
-	"github.com/quantum-wealth/sealed-secrets-ui/k8s"
-	sealedsecret "github.com/quantum-wealth/sealed-secrets-ui/sealed-secret"
+	"github.com/quantum-wealth/sealed-secrets-ui/model"
 	"github.com/quantum-wealth/sealed-secrets-ui/web/ui"
 	"github.com/rs/zerolog/log"
 )
 
-func parseKeyValuePairs(data string) map[string]string {
-	result := make(map[string]string)
-	lines := strings.Split(data, "\n")
-
-	if len(lines) == 0 {
-		return nil
-	}
-
-	for _, line := range lines {
-		parts := strings.SplitN(line, "=", 2)
-		if len(parts) == 2 {
-			result[parts[0]] = parts[1]
-		}
-	}
-
-	return result
+type sealer interface {
+	CreateSealedSecret(context.Context, model.CreateOpts) (string, error)
 }
 
-func CreateSealedSecret(w http.ResponseWriter, r *http.Request) {
+type SealedSecretHandler struct {
+	svc sealer
+}
+
+func NewSealedSecretHandler(svc sealer) SealedSecretHandler {
+	return SealedSecretHandler{svc: svc}
+}
+
+func (s SealedSecretHandler) CreateSealedSecretHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -57,22 +51,15 @@ func CreateSealedSecret(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pubKey, err := k8s.GetPublicKey()
-	if err != nil {
-		log.Ctx(r.Context()).Err(err).Msg("error getting public key")
-		http.Error(w, "Error getting public key", http.StatusInternalServerError)
-		return
+	createOpts := model.CreateOpts{
+		Scope:      scope,
+		Namespace:  namespace,
+		SecretName: secretName,
+		Values:     keyValues,
 	}
 
-	params := sealedsecret.EncryptValuesParams{
-		PubKey:    pubKey,
-		Namespace: namespace,
-		Scope:     scope,
-		Name:      secretName,
-		Values:    keyValues,
-	}
+	yamlManifest, err := s.svc.CreateSealedSecret(r.Context(), createOpts)
 
-	yamlManifest, err := sealedsecret.GetSealedSecret(params)
 	log.Info().Str("yaml", yamlManifest).Msg("sealed-secret created")
 
 	if err != nil {
@@ -87,4 +74,22 @@ func CreateSealedSecret(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error rendering code area", http.StatusInternalServerError)
 		return
 	}
+}
+
+func parseKeyValuePairs(data string) map[string]string {
+	result := make(map[string]string)
+	lines := strings.Split(data, "\n")
+
+	if len(lines) == 0 {
+		return nil
+	}
+
+	for _, line := range lines {
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) == 2 {
+			result[parts[0]] = parts[1]
+		}
+	}
+
+	return result
 }
