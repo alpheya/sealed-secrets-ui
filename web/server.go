@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"runtime/debug"
 
 	"time"
 
@@ -18,7 +17,7 @@ func recoverer(next http.Handler) http.HandlerFunc {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		defer func(ctx context.Context) {
 			if rvr := recover(); rvr != nil {
-				log.Error().Ctx(ctx).Err(fmt.Errorf("recovered from panic: %v\nstack: %s", rvr, string(debug.Stack())))
+				log.Error().Ctx(ctx).Msgf("recovering from panic: %v", rvr)
 
 				writer.Header().Set("Content-Type", "application/json")
 				writer.WriteHeader(http.StatusInternalServerError)
@@ -47,11 +46,13 @@ func start(server *http.Server) {
 	log.Info().Msg("Server stopped")
 }
 
-func Start(port string, handler http.Handler) {
+func Start(port string) {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill)
 	defer stop()
 
-	wrappedHandler := recoverer(handler)
+	routes := NewRouter()
+
+	wrappedHandler := recoverer(routes)
 
 	addr := fmt.Sprintf(":%s", port)
 

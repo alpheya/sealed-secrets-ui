@@ -24,7 +24,6 @@ func setupLogging() {
 
 func main() {
 	setupLogging()
-	handler := web.NewHandler()
 
-	web.Start("8080", handler)
+	web.Start("8080")
 }

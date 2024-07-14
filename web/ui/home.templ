@@ -1,4 +1,4 @@
-package web
+package ui
 
 templ CodeArea(yamlContent string) {
 	<div class="card">
@@ -39,7 +39,7 @@ templ Home() {
 								Namespace
 							</label>
 							<label class="radio">
-								<input type="radio" name="scope" value="strict"/>
+								<input type="radio" name="scope" checked value="strict"/>
 								Strict
 							</label>
 						</div>
@@ -47,13 +47,13 @@ templ Home() {
 					<div class="field">
 						<label class="label">Namespace</label>
 						<div class="control">
-							<input class="input" type="text" placeholder="Namespace" name="namespace"/>
+							<input class="input" type="text" required placeholder="Namespace" name="namespace"/>
 						</div>
 					</div>
 					<div class="field">
 						<label class="label">Secret Name</label>
 						<div class="control">
-							<input class="input" type="text" placeholder="the kubernetes secret name" name="secretName"/>
+							<input class="input" type="text" required placeholder="the kubernetes secret name" name="secretName"/>
 						</div>
 					</div>
 					<div class="field">
@@ -62,6 +62,7 @@ templ Home() {
 							<textarea
 								class="textarea"
 								name="values"
+								required
 								placeholder="API_TOKEN=SecretToken
 PG_PASSWORD=SecretPassword"
 							></textarea>

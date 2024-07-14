@@ -1,28 +1,30 @@
-package web
+package handlers
 
 import (
-	"embed"
 	"net/http"
 	"strings"
 
-	"github.com/a-h/templ"
 	"github.com/quantum-wealth/sealed-secrets-ui/k8s"
 	sealedsecret "github.com/quantum-wealth/sealed-secrets-ui/sealed-secret"
+	"github.com/quantum-wealth/sealed-secrets-ui/web/ui"
 	"github.com/rs/zerolog/log"
 )
-
-//go:embed *.gif
-var spinnerFiles embed.FS
 
 func parseKeyValuePairs(data string) map[string]string {
 	result := make(map[string]string)
 	lines := strings.Split(data, "\n")
+
+	if len(lines) == 0 {
+		return nil
+	}
+
 	for _, line := range lines {
 		parts := strings.SplitN(line, "=", 2)
 		if len(parts) == 2 {
 			result[parts[0]] = parts[1]
 		}
 	}
+
 	return result
 }
 
@@ -42,11 +44,22 @@ func CreateSealedSecret(w http.ResponseWriter, r *http.Request) {
 	secretName := r.FormValue("secretName")
 	valuesToEncrypt := r.FormValue("values")
 
-	log.Info().Str("scope", scope).Str("namespace", namespace).Str("secretName", secretName).Msg("Creating sealed secret")
+	if scope == "" || namespace == "" || secretName == "" || valuesToEncrypt == "" {
+		http.Error(w, "Missing required fields", http.StatusBadRequest)
+		return
+	}
+
+	log.Info().Str("scope", scope).Str("namespace", namespace).Str("secretName", secretName).Msg("creating sealed secret")
 	keyValues := parseKeyValuePairs(valuesToEncrypt)
+
+	if keyValues == nil {
+		http.Error(w, "Error parsing key value pairs", http.StatusBadRequest)
+		return
+	}
 
 	pubKey, err := k8s.GetPublicKey()
 	if err != nil {
+		log.Ctx(r.Context()).Err(err).Msg("error getting public key")
 		http.Error(w, "Error getting public key", http.StatusInternalServerError)
 		return
 	}
@@ -60,19 +73,18 @@ func CreateSealedSecret(w http.ResponseWriter, r *http.Request) {
 	}
 
 	yamlManifest, err := sealedsecret.GetSealedSecret(params)
+	log.Info().Str("yaml", yamlManifest).Msg("sealed-secret created")
+
 	if err != nil {
+		log.Ctx(r.Context()).Err(err).Msg("error creating sealed secret")
 		http.Error(w, "Error creating sealed secret", http.StatusInternalServerError)
 		return
 	}
 
-	CodeArea(yamlManifest).Render(r.Context(), w)
-}
-
-func NewHandler() http.Handler {
-	mux := http.NewServeMux()
-	mux.Handle("/spinner.gif", http.FileServer(http.FS(spinnerFiles)))
-	mux.HandleFunc("/sealed-secret", CreateSealedSecret)
-	mux.Handle("/", templ.Handler(Home()))
-
-	return mux
+	err = ui.CodeArea(yamlManifest).Render(r.Context(), w)
+	if err != nil {
+		log.Err(err).Msg("error rendering code area")
+		http.Error(w, "Error rendering code area", http.StatusInternalServerError)
+		return
+	}
 }
