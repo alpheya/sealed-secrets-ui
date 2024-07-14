@@ -1,4 +1,4 @@
-module github.com/quantum-wealth/sealed-secrets-ui
+module github.com/alpheya/sealed-secrets-ui
 
 go 1.22.5
 

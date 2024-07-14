@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/quantum-wealth/sealed-secrets-ui/model"
-	"github.com/quantum-wealth/sealed-secrets-ui/web/ui"
+	"github.com/alpheya/sealed-secrets-ui/model"
+	"github.com/alpheya/sealed-secrets-ui/web/ui"
 	"github.com/rs/zerolog/log"
 )
 

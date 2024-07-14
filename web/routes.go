@@ -7,10 +7,10 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/a-h/templ"
-	sealedsecret "github.com/quantum-wealth/sealed-secrets-ui/sealed-secret"
-	"github.com/quantum-wealth/sealed-secrets-ui/web/assets"
-	"github.com/quantum-wealth/sealed-secrets-ui/web/handlers"
-	"github.com/quantum-wealth/sealed-secrets-ui/web/ui"
+	sealedsecret "github.com/alpheya/sealed-secrets-ui/sealed-secret"
+	"github.com/alpheya/sealed-secrets-ui/web/assets"
+	"github.com/alpheya/sealed-secrets-ui/web/handlers"
+	"github.com/alpheya/sealed-secrets-ui/web/ui"
 )
 
 func NewRouter() http.Handler {

@@ -5,7 +5,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 
-	"github.com/quantum-wealth/sealed-secrets-ui/model"
+	"github.com/alpheya/sealed-secrets-ui/model"
 	"gopkg.in/yaml.v2"
 	"k8s.io/client-go/kubernetes"
 )
