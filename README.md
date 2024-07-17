@@ -98,7 +98,7 @@ spec:
   ports:
     - name: http
       port: 8080
-      targetPort: http
+      targetPort: 8080
       protocol: TCP
   selector:
     app.kubernetes.io/name: sealed-secrets-ui
