@@ -4,6 +4,8 @@ Sealed Secrets UI provides a simple and intuitive web interface for creating and
 
 ![Sealed Secrets UI](./sealed-secrets-ui.png)
 
+For a short demo, check out the video by [@kubesimplify](https://www.youtube.com/watch?v=E0F4usFauvc).
+
 
 ## Features
 
@@ -74,13 +76,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: http
+              port: 8080
             initialDelaySeconds: 10
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /healthz
-              port: http
+              port: 8080
             initialDelaySeconds: 10
             periodSeconds: 10
 ```
