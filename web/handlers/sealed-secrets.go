@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -9,6 +11,8 @@ import (
 	"github.com/alpheya/sealed-secrets-ui/web/ui"
 	"github.com/rs/zerolog/log"
 )
+
+var escapedBacktick = strings.Join([]string{`\`, "`"}, "")
 
 type sealer interface {
 	CreateSealedSecret(context.Context, model.CreateOpts) (string, error)
@@ -22,7 +26,7 @@ func NewSealedSecretHandler(svc sealer) SealedSecretHandler {
 	return SealedSecretHandler{svc: svc}
 }
 
-func reapondError(w http.ResponseWriter, message string) {
+func respondError(w http.ResponseWriter, message string) {
 	w.Header().Set("HX-Retarget", ".message")
 
 	err := ui.Error(message).Render(context.Background(), w)
@@ -49,15 +53,19 @@ func (s SealedSecretHandler) CreateSealedSecretHandler(w http.ResponseWriter, r 
 	valuesToEncrypt := r.FormValue("values")
 
 	if scope == "" || namespace == "" || secretName == "" || valuesToEncrypt == "" {
-		reapondError(w, "All fields are required")
+		respondError(w, "All fields are required")
 		return
 	}
 
 	log.Info().Str("scope", scope).Str("namespace", namespace).Str("secretName", secretName).Msg("creating sealed secret")
-	keyValues := parseKeyValuePairs(valuesToEncrypt)
+	keyValues, err := parseKeyValuePairs(valuesToEncrypt)
+	if err != nil {
+		respondError(w, fmt.Sprintf("Wrongly formatted value(s): %v", err.Error()))
+		return
+	}
 
 	if keyValues == nil {
-		reapondError(w, "No key-value pairs found")
+		respondError(w, "No key-value pairs found")
 		return
 	}
 
@@ -74,7 +82,7 @@ func (s SealedSecretHandler) CreateSealedSecretHandler(w http.ResponseWriter, r 
 
 	if err != nil {
 		log.Ctx(r.Context()).Err(err).Msg("error creating sealed secret")
-		reapondError(w, "Error creating sealed secret")
+		respondError(w, "Error creating sealed secret")
 		return
 	}
 
@@ -86,20 +94,68 @@ func (s SealedSecretHandler) CreateSealedSecretHandler(w http.ResponseWriter, r 
 	}
 }
 
-func parseKeyValuePairs(data string) map[string]string {
+func parseKeyValuePairs(data string) (map[string]string, error) {
 	result := make(map[string]string)
 	lines := strings.Split(data, "\n")
 
-	if len(lines) == 0 {
-		return nil
+	if len(lines) == 1 && len(lines[0]) == 0 {
+		return nil, errors.New("empty")
 	}
 
-	for _, line := range lines {
-		parts := strings.SplitN(line, "=", 2)
-		if len(parts) == 2 {
-			result[parts[0]] = parts[1]
+	var multilineKey string
+	var multilineValue strings.Builder
+
+	for i, line := range lines {
+
+		// inside backticked block
+		if len(multilineKey) > 0 {
+			var isEndOfBlock bool
+			if !strings.HasSuffix(line, escapedBacktick) {
+				line, isEndOfBlock = strings.CutSuffix(line, "`")
+			}
+			line = strings.ReplaceAll(line, escapedBacktick, "`")
+			multilineValue.WriteByte('\n')
+			multilineValue.WriteString(line)
+			if isEndOfBlock {
+				result[multilineKey] = multilineValue.String()
+				multilineValue.Reset()
+				multilineKey = ""
+			}
+			continue
 		}
+
+		parts := strings.SplitN(line, "=", 2)
+
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("Missing '=' at line: %v", i)
+		}
+
+		// backticked block starts
+		part, ok := strings.CutPrefix(parts[1], "`")
+		if ok {
+			multilineKey = parts[0]
+
+			var isEndOfBlock bool
+			if !strings.HasSuffix(part, escapedBacktick) {
+				part, isEndOfBlock = strings.CutSuffix(part, "`")
+			}
+			part = strings.ReplaceAll(part, escapedBacktick, "`")
+			multilineValue.WriteString(part)
+			if isEndOfBlock {
+				result[multilineKey] = multilineValue.String()
+				multilineValue.Reset()
+				multilineKey = ""
+			}
+			continue
+		}
+
+		// oneline value
+		result[parts[0]] = parts[1]
 	}
 
-	return result
+	if len(multilineKey) != 0 {
+		return nil, fmt.Errorf("Backticked block is not closed")
+	}
+
+	return result, nil
 }
