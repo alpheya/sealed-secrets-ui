@@ -64,8 +64,13 @@ templ Home() {
 								class="textarea"
 								name="values"
 								required
+                                                                rows="6"
 								placeholder="API_TOKEN=SecretToken
-PG_PASSWORD=SecretPassword"
+PG_PASSWORD=SecretPassword
+PRIVATE_KEY=`-----BEGIN PRIVATE KEY-----
+...
+-----END PRIVATE KEY-----`
+# escape backtick (\`), if the multiline value contains backtick"
 							></textarea>
 						</div>
 					</div>
