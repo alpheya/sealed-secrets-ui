@@ -18,7 +18,7 @@ updates:
         update-types:
           - "minor"
           - "patch"
-    # Allow up to 5 open PRs for major updates
+    # Allow all dependency types and update types
     allow:
       - dependency-type: "direct"
-        update-type: "major"
+      - dependency-type: "indirect"
