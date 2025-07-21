@@ -18,8 +18,3 @@ updates:
         update-types:
           - "minor"
           - "patch"
-    # Allow all dependency types and update types
-    allow:
-      - dependency-type: "direct"
-      - dependency-type: "indirect"
-
