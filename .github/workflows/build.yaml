@@ -1,0 +1,57 @@
+name: Build and Push
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: node-python
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate environment variables
+        run: |
+          if [ -z "$AZURE_CLIENT_ID" ]; then
+            echo "AZURE_CLIENT_ID is not set"
+            exit 1
+          fi
+          if [ -z "$AZURE_TENANT_ID" ]; then
+            echo "AZURE_TENANT_ID is not set"
+            exit 1
+          fi
+          if [ -z "$AZURE_FEDERATED_TOKEN_FILE" ]; then
+            echo "AZURE_FEDERATED_TOKEN_FILE is not set"
+            exit 1
+          fi
+
+      - name: Login to Azure
+        run: |
+          az login \
+            --service-principal \
+            --username $AZURE_CLIENT_ID \
+            --tenant $AZURE_TENANT_ID \
+            --federated-token $(cat $AZURE_FEDERATED_TOKEN_FILE)
+
+      - name: Login to ACR
+        run: az acr login --name alpheyaacr.azurecr.io
+
+      - name: Set image tag from git tag
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          echo "IMAGE_TAG=${TAG}" | tee -a $GITHUB_ENV
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: alpheyaacr.azurecr.io/sealed-secrets-ui:${{ env.IMAGE_TAG }}
