@@ -29,23 +29,6 @@ templ Home() {
 				<h1 class="title">Sealed Secrets UI</h1>
 				<form hx-post="/sealed-secret" hx-target=".card" hx-swap="outerHTML">
 					<div class="field">
-						<label class="label">Scope</label>
-						<div class="control">
-							<label class="radio">
-								<input type="radio" name="scope" value="cluster"/>
-								Cluster
-							</label>
-							<label class="radio">
-								<input type="radio" name="scope" value="namespace"/>
-								Namespace
-							</label>
-							<label class="radio">
-								<input type="radio" name="scope" checked value="strict"/>
-								Strict
-							</label>
-						</div>
-					</div>
-					<div class="field">
 						<label class="label">Namespace</label>
 						<div class="control">
 							<input class="input" type="text" required placeholder="Namespace" name="namespace"/>
