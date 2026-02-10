@@ -20,7 +20,6 @@ type encryptRequest struct {
 	pubKey     *rsa.PublicKey
 	secretName string
 	namespace  string
-	scope      string
 	values     map[string]string
 }
 
@@ -72,7 +71,6 @@ func (s SealedSecretService) CreateSealedSecret(ctx context.Context, opts model.
 		secretName: opts.SecretName,
 		namespace:  opts.Namespace,
 		values:     valuesToEncrypt,
-		scope:      opts.Scope,
 	}
 
 	encryptedData, err := s.encryptValues(req)
@@ -80,29 +78,19 @@ func (s SealedSecretService) CreateSealedSecret(ctx context.Context, opts model.
 		return "", err
 	}
 
-	annotations := make(map[string]string)
-	if req.scope == "cluster" {
-		annotations["sealedsecrets.bitnami.com/cluster-wide"] = "true"
-	} else if req.scope == "namespace" {
-		annotations["sealedsecrets.bitnami.com/namespace-wide"] = "true"
-	}
-	// if scope == strict we not need any annotations
-
 	sealedSecret := model.SealedSecret{
 		APIVersion: "bitnami.com/v1alpha1",
 		Kind:       "SealedSecret",
 		Metadata: model.Metadata{
-			Name:        req.secretName,
-			Namespace:   req.namespace,
-			Annotations: annotations,
+			Name:      req.secretName,
+			Namespace: req.namespace,
 		},
 		Spec: model.SealedSecretSpec{
 			EncryptedData: encryptedData,
 			Template: model.Template{
 				Metadata: model.Metadata{
-					Name:        req.secretName,
-					Namespace:   req.namespace,
-					Annotations: annotations,
+					Name:      req.secretName,
+					Namespace: req.namespace,
 				},
 			},
 		},
@@ -117,14 +105,7 @@ func (s SealedSecretService) CreateSealedSecret(ctx context.Context, opts model.
 }
 
 func (s SealedSecretService) getLabel(req encryptRequest) string {
-	switch req.scope {
-	case "cluster":
-		return ""
-	case "namespace":
-		return req.namespace
-	default:
-		return fmt.Sprintf("%s/%s", req.namespace, req.secretName)
-	}
+	return fmt.Sprintf("%s/%s", req.namespace, req.secretName)
 }
 
 func (s SealedSecretService) encryptValues(req encryptRequest) (map[string]string, error) {
