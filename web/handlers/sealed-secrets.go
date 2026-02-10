@@ -47,17 +47,16 @@ func (s SealedSecretHandler) CreateSealedSecretHandler(w http.ResponseWriter, r 
 		http.Error(w, "Error parsing form", http.StatusBadRequest)
 		return
 	}
-	scope := r.FormValue("scope")
 	namespace := r.FormValue("namespace")
 	secretName := r.FormValue("secretName")
 	valuesToEncrypt := r.FormValue("values")
 
-	if scope == "" || namespace == "" || secretName == "" || valuesToEncrypt == "" {
+	if namespace == "" || secretName == "" || valuesToEncrypt == "" {
 		respondError(w, "All fields are required")
 		return
 	}
 
-	log.Info().Str("scope", scope).Str("namespace", namespace).Str("secretName", secretName).Msg("creating sealed secret")
+	log.Info().Str("namespace", namespace).Str("secretName", secretName).Msg("creating sealed secret")
 	keyValues, err := parseKeyValuePairs(valuesToEncrypt)
 	if err != nil {
 		respondError(w, fmt.Sprintf("Wrongly formatted value(s): %v", err.Error()))
@@ -70,7 +69,6 @@ func (s SealedSecretHandler) CreateSealedSecretHandler(w http.ResponseWriter, r 
 	}
 
 	createOpts := model.CreateOpts{
-		Scope:      scope,
 		Namespace:  namespace,
 		SecretName: secretName,
 		Values:     keyValues,
